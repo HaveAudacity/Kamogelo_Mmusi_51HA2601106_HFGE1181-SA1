@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float rotationSpeed = 15f;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private bool forceTouchControls = false;
+    private bool UseTouchControls => Application.isMobilePlatform || forceTouchControls;
     private float movementMultiplier = 1f;
     private Vector2 moveDirection;
     private Vector2 rotationDirection;
@@ -58,13 +60,22 @@ public class PlayerController : MonoBehaviour
     {
         if (!obstacleInPath)
         {
-            Vector2 movement = transform.up * moveDirection.y;
+            float forward = UseTouchControls ? moveDirection.magnitude : moveDirection.y;
+            Vector2 movement = transform.up * forward;
             rb.linearVelocity = movement * movementSpeed;
         }
     }
 
     public void RotationHandler()
     {
+        if (UseTouchControls)
+        {
+            if (moveDirection.sqrMagnitude > 0.01f)
+            {
+                transform.up = new Vector3(moveDirection.x, moveDirection.y, 0f);
+            }
+            return;
+        }
         Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
 
