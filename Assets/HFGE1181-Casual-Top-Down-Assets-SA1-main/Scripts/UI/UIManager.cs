@@ -60,6 +60,11 @@ public class UIManager : MonoBehaviour
     {
         GameStateManager.Instance.SetGameState(GameState.Playing);
     }
-    
-    
+
+    public void Pause()
+    {
+        GameStateManager.Instance.SetGameState(GameState.Paused);
+    }
+
+
 }
